@@ -11,7 +11,8 @@ al = 4.92576
 de = 0.01047
 Nh = 3
 ko = 1.002738
-S0 = 1
+#S0 = 3.790867
+S0 = 4
 file = open("Uraw.dat", "r")
 file_with_lines = file.readlines()[0:132]
 
@@ -125,20 +126,46 @@ print(len(FonBint), len(SrCompB), len(SrCompT), len(NB))
 #plt.plot(SrCompT, NB)
 #plt.show()
 
-print(la*12/m.pi)
+#print(la*12/m.pi)
 M = []
 for i in range(0, len(SrCompT)):
     mk = (SrCompT[i] - Nh - 1 + la*12/m.pi)*ko
     S = S0 + mk
-    t = S*m.pi/12 - al
+    if S > 24:
+        S = S-24
+        #t = S * m.pi / 12 - al - 2*m.pi
+        #ms = (m.sin(fi) * m.sin(de) + m.cos(fi) * m.cos(de) * m.cos(t)) ** -1
+        #M.append(ms)
+    t = S*m.pi/12 - al - 2*m.pi
+    #cosz = m.sin(fi)*m.sin(de) + m.cos()
     ms = (m.sin(fi)*m.sin(de) + m.cos(fi)*m.cos(de)*m.cos(t))**-1
+    if m.acos(ms**-1) > 85*m.pi/180:
+        break
     M.append(ms)
 magn = []
-for i in range(0, len(NB)):
-    ma = -2.5*m.log(NB[i])
+for i in range(0, len(M)):
+    ma = -2.5*m.log(NB[i]) + 36
     magn.append(ma)
-print(M)
+print(mk)
+new_file = open('MassAir.dat', 'w')
+for i in range(0, len(M)):
+    new_file.write(f'{M[i]}\n')
+new_file.close()
+new_file = open('Magn.dat', 'w')
+for i in range(0, len(magn)):
+    new_file.write(f'{magn[i]}\n')
+new_file.close()
 plt.plot(M, magn)
 plt.show()
 
+Alfe = []
+for i in range(0, len(M)):
+    alf = (magn[i-1] - magn[i])/(M[i-1] - M[i])
+    if alf > 0:
+        Alfe.append(alf)
+n=0
+for i in range(0, len(Alfe)):
+    n = n + Alfe[i]
+srAlfe = n/len(Alfe)
+print(srAlfe)
 
