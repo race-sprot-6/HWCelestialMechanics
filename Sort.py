@@ -12,7 +12,7 @@ de = 0.01047
 Nh = 3
 ko = 1.002738
 #S0 = 3.790867
-S0 = 4
+S0 = 0.269008
 file = open("Uraw.dat", "r")
 file_with_lines = file.readlines()[0:132]
 
@@ -68,10 +68,7 @@ for i in range(3, len(StEl)):
             CompB.append(prB2)
             prT2 = []
             prB2 = []
-#FonT = [x.strip([]) for x in FonT]
-#for ele in FonB:
-    #if ele == "[]":
-        #FonB.remove(ele)
+
 SrFonB = []
 sumB = 0
 for i in range(0, len(FonB)):
@@ -115,38 +112,35 @@ FonTint = scipy.interpolate.interp1d (SrFonT, SrFonB)
 FonBint = [] #список, в котором значения фонов, соответствующие по времени средним компам
 for i in range(0, len(SrCompT)):
     FonBint.append(FonTint(SrCompT[i]))
-#plt.plot(SrCompT, FonBint, '-ob')
-#plt.show()
+
 NB = []
 for i in range(0, len(FonBint)):
-    nB = round(SrCompB[i] - FonBint[i], 0)
+    nB = round((SrCompB[i] - FonBint[i]), 0)
     NB.append(nB)
-print(NB)
-print(len(FonBint), len(SrCompB), len(SrCompT), len(NB))
-#plt.plot(SrCompT, NB)
-#plt.show()
+#print(NB)
+#print(len(FonBint), len(SrCompB), len(SrCompT), len(NB))
 
-#print(la*12/m.pi)
 M = []
 for i in range(0, len(SrCompT)):
     mk = (SrCompT[i] - Nh - 1 + la*12/m.pi)*ko
-    S = S0 + mk
-    if S > 24:
-        S = S-24
-        #t = S * m.pi / 12 - al - 2*m.pi
-        #ms = (m.sin(fi) * m.sin(de) + m.cos(fi) * m.cos(de) * m.cos(t)) ** -1
-        #M.append(ms)
-    t = S*m.pi/12 - al - 2*m.pi
-    #cosz = m.sin(fi)*m.sin(de) + m.cos()
+    S = S0*12/m.pi + mk
+    t = S*m.pi/12 - al
     ms = (m.sin(fi)*m.sin(de) + m.cos(fi)*m.cos(de)*m.cos(t))**-1
-    if m.acos(ms**-1) > 85*m.pi/180:
+    if m.acos(ms**-1) > 70*m.pi/180:
         break
     M.append(ms)
+    #print(mk)
+    print(S)
+
+new_file = open('Time.dat', 'w')
+for i in range(0, len(SrCompT)):
+    new_file.write(f'{SrCompT[i]}\n')
+new_file.close()
 magn = []
 for i in range(0, len(M)):
-    ma = -2.5*m.log(NB[i]) + 36
+    ma = -2.5*m.log10(NB[i])
     magn.append(ma)
-print(mk)
+#print(mk)
 new_file = open('MassAir.dat', 'w')
 for i in range(0, len(M)):
     new_file.write(f'{M[i]}\n')
@@ -161,11 +155,21 @@ plt.show()
 Alfe = []
 for i in range(0, len(M)):
     alf = (magn[i-1] - magn[i])/(M[i-1] - M[i])
-    if alf > 0:
-        Alfe.append(alf)
+    #if alf > 0:
+        #Alfe.append(alf)
+    Alfe.append(alf)
 n=0
 for i in range(0, len(Alfe)):
     n = n + Alfe[i]
 srAlfe = n/len(Alfe)
-print(srAlfe)
+
+new_file = open('AlphaB.dat', 'w')
+for i in range(0, len(Alfe)):
+    new_file.write(f'{Alfe[i]}\n')
+new_file.close()
+
+print(srAlfe, Alfe)
+print(SrCompB)
+print(NB)
+#звёзды для второго: 21, 13
 
