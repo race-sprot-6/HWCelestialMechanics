@@ -8,20 +8,22 @@ def fpi(a, P, SM):
   PI.append(pi)
 
 def fMv(mv, pi):
-  Mv = mv + 5 + m.log10(pi)
+  Mv = mv + 5 + 5*m.log10(pi)
   MV.append(Mv)
 def fMb(Mv, BC):
   Mb = Mv + BC
   MB.append(Mb)
+
+#Звезды первая - 61Cyg, вторая - 17 σ CrB.
 al1 = 21+6.9/60 #hour
 de1 = 38+45/60 #grad
-MV1 = [5.22, 6.04]
+MV1 = [[5.22, 6.04], [5.58, 6.59]] #Первый подсписок - звёздные величины для первой звезды, второй - для второй.
 mv11 = 5.22
 mv21 = 6.04
 # Спектральный класс первой - K5V, второй - K7V
-P1 = 722 #year
-a1 = 24.65 #"
-BC1 = [-0.60, -0.764]
+P1 = [722.0, 1000.0] #year
+a1 = [24.65, 6.60] #"
+BC1 = [[-0.60, -0.764], [-0.03, -0.038]]
 
 al2 = 16+14.7/60
 de2 = 33+52/60
@@ -60,35 +62,37 @@ for i in range(0, len(StEl)):
   for k in range(0, len(StEl[i])):
     magn.append(float(StEl[i][1]))
     mass.append(float(StEl[i][0]))
-P = []
-SM =1
-for j in range(0, 10):
-    PI = []
-    MV = []
-    MB = []
-    fpi(a1, P1, SM)
-    P.append(PI[0])
-    for i in range(0, len(MV1)):
-        fMv(MV1[i], PI[0])
-
-    for i in range(0, len(MV)):
-        fMb(MV[i], BC1[i])
-
-    MassInt = scipy.interpolate.interp1d(magn, mass)
-    Mass = [] #список, в котором значения фонов, соответствующие по времени средним компам
-    for i in range(0, len(MB)):
-        sm = 10**(float(MassInt(MB[i])))
-        Mass.append(sm)
-    SM = Mass[0] + Mass[1]
 
 
+for k in range(0, len(MV1)):
+    P = []
+    SM = 2
+    for j in range(0, 10):
+        PI = []
+        MV = []
+        MB = []
+        fpi(a1[k], P1[k], SM)
+        P.append(PI[0])
+        for i in range(0, len(MV1)):
+            fMv(MV1[k][i], PI[0])
+
+        for i in range(0, len(MV)):
+            fMb(MV[i], BC1[k][i])
+
+        MassInt = scipy.interpolate.interp1d(magn, mass)
+        Mass = []
+        for i in range(0, len(MB)):
+            sm = 10**(float(MassInt(MB[i])))
+            Mass.append(sm)
+        SM = Mass[0] + Mass[1]
+    print(P[-1])
 
 
+#print(StEl)
+#print(len(mass))
+#print(len(magn))
+#print(P[-1], MB, MV)
 
-
-print(StEl)
-print(len(mass))
-print(len(magn))
-print(P[-1])
 #plt.plot(mass, magn)
 #plt.show()
+#Относительная погрешность для первой звезды 3%
