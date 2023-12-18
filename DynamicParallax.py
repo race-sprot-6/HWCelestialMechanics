@@ -27,15 +27,7 @@ BC1 = [[-0.60, -0.764], [-0.03, -0.038]]
 
 al2 = 16+14.7/60
 de2 = 33+52/60
-MV2 = [5.58, 6.59]
-mv21 = 5.58
-mv22 = 6.59
 # G0V, G1V
-P2 = 1000.0
-a2 = 6.60
-BC2 = [-0.03, -0.038]
-
-#SM = [2 ]
 
 file = open("MagmMass.dat", "r")
 file_with_lines = file.readlines()[0:30]
@@ -63,7 +55,6 @@ for i in range(0, len(StEl)):
     magn.append(float(StEl[i][1]))
     mass.append(float(StEl[i][0]))
 
-
 for k in range(0, len(MV1)):
     P = []
     SM = 2
@@ -73,6 +64,7 @@ for k in range(0, len(MV1)):
         MB = []
         fpi(a1[k], P1[k], SM)
         P.append(PI[0])
+        print(PI[0])
         for i in range(0, len(MV1)):
             fMv(MV1[k][i], PI[0])
 
@@ -87,12 +79,4 @@ for k in range(0, len(MV1)):
         SM = Mass[0] + Mass[1]
     print(P[-1])
 
-
-#print(StEl)
-#print(len(mass))
-#print(len(magn))
-#print(P[-1], MB, MV)
-
-#plt.plot(mass, magn)
-#plt.show()
-#Относительная погрешность для первой звезды 3%
+#Относительная погрешность для первой звезды 3%, для второй 15%, т.к. это кратная звезда.
