@@ -57,23 +57,34 @@ def fk4(vx, x, vy, y, a):
         return fvy(vx[-1], x[-1] + h*fk3(vx, x, vy, y, 2), vy[-1], y[-1] + h*fk3(vx, x, vy, y, 4))
     elif a == 4:
         return fy(vx[-1], x[-1], vy[-1] + h*fk3(vx, x, vy, y, 3), y[-1])
-Nday = []
-for n in range(200):
-    Nday.append(n*3600)
+
 X = []
 Y = []
-for t in range(60*60*24*3):
-    #print(t)#секунды
-    Summ_vx = vx[-1] +h/6*(fk1(vx, x, vy, y, 1) + 2*fk2(vx, x, vy, y, 1) + 2*fk3(vx, x, vy, y, 1) + fk4(vx, x, vy, y, 1))
-    vx.append(Summ_vx)
-    Summ_x = x[-1] + h/6*(fk1(vx, x, vy, y, 2) + 2 * fk2(vx, x, vy, y, 2) + 2 * fk3(vx, x, vy, y, 2) + fk4(vx, x, vy, y, 2))
-    x.append(Summ_x)
-    Summ_vy = vy[-1] + h/6*(fk1(vx, x, vy, y, 3) + 2 * fk2(vx, x, vy, y, 3) + 2 * fk3(vx, x, vy, y, 3) + fk4(vx, x, vy, y, 3))
-    vy.append(Summ_vy)
-    Summ_y = y[-1] + h/6*(fk1(vx, x, vy, y, 4) + 2 * fk2(vx, x, vy, y, 4) + 2 * fk3(vx, x, vy, y, 4) + fk4(vx, x, vy, y, 4))
-    y.append(Summ_y)
-    #if t == 3600:
-        #X.append(Summ_x)
-        #Y.append(Summ_y)
-plt.scatter(x, y)
+XE = []
+YE = []
+for n in range(26):
+    for t in range(3600*5):
+        #print(t)#секунды
+        Summ_vx = vx[-1] +h/6*(fk1(vx, x, vy, y, 1) + 2*fk2(vx, x, vy, y, 1) + 2*fk3(vx, x, vy, y, 1) + fk4(vx, x, vy, y, 1))
+        vx.append(Summ_vx)
+        Summ_x = x[-1] + h/6*(fk1(vx, x, vy, y, 2) + 2 * fk2(vx, x, vy, y, 2) + 2 * fk3(vx, x, vy, y, 2) + fk4(vx, x, vy, y, 2))
+        x.append(Summ_x)
+        Summ_vy = vy[-1] + h/6*(fk1(vx, x, vy, y, 3) + 2 * fk2(vx, x, vy, y, 3) + 2 * fk3(vx, x, vy, y, 3) + fk4(vx, x, vy, y, 3))
+        vy.append(Summ_vy)
+        Summ_y = y[-1] + h/6*(fk1(vx, x, vy, y, 4) + 2 * fk2(vx, x, vy, y, 4) + 2 * fk3(vx, x, vy, y, 4) + fk4(vx, x, vy, y, 4))
+        y.append(Summ_y)
+        if t == 0:
+            X.append(Summ_x)
+            Y.append(Summ_y)
+        if (Summ_x**2 + Summ_y**2)**0.5 < R: break
+    #XE.append(R * m.cos(n * 10))
+    #YE.append(R * m.sin(n * 10))
+
+for n in range(100):
+    XE.append(R * m.cos(n * 10))
+    YE.append(R * m.sin(n * 10))
+fig, ax = plt.subplots()
+ax.scatter(X, Y, color = 'red')
+ax.scatter(XE, YE, color = 'blue')
+#plt.scatter(X, XE, Y, YE)
 plt.show()
