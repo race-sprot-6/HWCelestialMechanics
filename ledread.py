@@ -17,7 +17,7 @@ def read_leds_cfg(file_path):
 
 
 # Example usage
-file_path = 'leds.cfg'
+file_path = 'leds550G.cfg'
 header, led_values = read_leds_cfg(file_path)
 print("Header:", header)
 print("LED Values:", led_values)
